@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="robots" content="noindex,nofollow" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Калькулятор висаджування</title>
+	<link rel="icon" type="image/x-icon" href="./favicon.ico" />
+	<style>
+		* {
+			box-sizing: border-box;
+		}
+		body {
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI Variable Display', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+			font-size: 14px;
+			margin: 0;
+			background-color: #eee;
+			color: #323232;
+			text-rendering: optimizeLegibility;
+			-webkit-font-smoothing: antialiased;
+			-moz-osx-font-smoothing: grayscale;
+			-webkit-text-size-adjust: 100%;
+			-webkit-tap-highlight-color: transparent;
+			overflow: hidden;
+		}
+		.content {
+			padding: 8px;
+			display: flex;
+			flex-direction: column;
+			gap: 8px;
+			width: 100%;
+			max-width: 360px;
+			margin: 0 auto;
+			overflow: hidden;
+		}
+		.title {
+			margin: 0;
+			font-size: 20px;
+			font-weight: 400;
+			line-height: 32px;
+			text-align: center;
+		}
+		.table {
+			background-color: #fff;
+			border-radius: 12px;
+			box-shadow: 0 0 0 1px rgba(0, 0, 0, .02), 0 4px 8px -4px rgba(0, 0, 0, .2);
+			border: none;
+			border-collapse: collapse;
+		}
+		.table th, .table tr:not(:last-child) {
+			border-bottom: 1px solid #e9e9e9;
+		}
+		.table th {
+			font-weight: 600;
+			font-size: 14px;
+		}
+		.table td, .table th {
+			padding: 8px;
+			line-height: 16px;
+		}
+		.table tfoot {
+			font-weight: 600;
+			border-top: 1px solid #e9e9e9;
+		}
+		.button-container {
+			display: flex;
+			flex-direction: column;
+			gap: 4px;
+			padding-bottom: 8px;
+		}
+		button, input, select {
+			font: inherit;
+		}
+		.button {
+			margin: 0;
+			padding: 0;
+			height: 36px;
+			display: inline-flex;
+			flex-direction: row;
+			align-items: center;
+			justify-content: center;
+			gap: 4px;
+			font-weight: 600;
+			color: #323232;
+			background-color: rgba(0, 0, 0, .08);
+			border: none;
+			border-radius: 18px;
+			cursor: pointer;
+			user-select: none;
+			outline: 0 solid #3d5afe;
+			outline-offset: 2px;
+			transition: .1s ease-out;
+			transition-property: background, color, outline;
+		}
+		.button:not(:disabled):hover {
+			background-color: rgba(0, 0, 0, .12);
+		}
+		.button:not(:disabled):active {
+			background-color: rgba(0, 0, 0, .22);
+		}
+		.button.primary {
+			color: #fff;
+			background-color: #3d5afe;
+		}
+		.button.primary:not(:disabled):hover {
+			background-color: #536dfe;
+		}
+		.button.primary:not(:disabled):active {
+			background-color: #304ffe;
+		}
+		.button:focus-visible {
+			outline-width: 3px;
+			z-index: 1;
+		}
+		.dialog {
+			width: 320px;
+			padding: 0;
+			border: none;
+			border-radius: 26px;
+			box-shadow: 0 0 2px rgba(0, 0, 0, .25), 0 16px 32px -8px rgba(0, 0, 0, .25);
+			outline: none;
+			overflow: hidden;
+			animation: .1s ease-out dialog-popup;
+		}
+		.dialog::backdrop {
+			background-color: rgba(0, 0, 0, .5);
+			backdrop-filter: saturate(1.5) blur(20px);
+			animation: .1s ease-out dialog-backdrop-fade;
+		}
+		@keyframes dialog-popup {
+			from {
+				opacity: 0;
+				transform: scale(0.6) translateY(25%);
+			}
+			to {
+				opacity: 1;
+				transform: scale(1) translateY(0);
+			}
+		}
+		@keyframes dialog-backdrop-fade {
+			from {
+				background-color: transparent;
+				backdrop-filter: none;
+			}
+			to {
+				background-color: rgba(0, 0, 0, .5);
+				backdrop-filter: saturate(1.5) blur(20px);
+			}
+		}
+		form {
+			padding: 0 8px;
+			display: flex;
+			flex-direction: column;
+			gap: 8px;
+		}
+		label {
+			display: flex;
+			flex-direction: column;
+			gap: 2px;
+		}
+		label span {
+			display: block;
+			font-weight: 600;
+			color: rgba(41, 54, 61, .82);
+		}
+		.select, .input {
+			height: 36px;
+		}
+		.select:not(:disabled) {
+			cursor: pointer;
+		}
+	</style>
+</head>
+
+<body>
+	<main class="content">
+		<div></div>
+		<h1 class="title">Калькулятор висаджування</h1>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>№</th>
+					<th>Параметри</th>
+					<th>Ящики</th>
+				</tr>
+			</thead>
+			<tbody id="tbody">
+				<tr>
+					<td>—</td>
+					<td>—</td>
+					<td>—</td>
+				</tr>
+			</tbody>
+			<tfoot id="tfoot">
+				<tr>
+					<td colspan="2">Всього</td>
+					<td>0</td>
+				</tr>
+			</tfoot>
+		</table>
+		<div class="button-container">
+			<button class="button primary" id="new-plant">Додати сорт</button>
+			<button class="button" id="clean-plants">Очистити</button>
+		</div>
+	</main>
+	<dialog class="dialog" id="add-dialog">
+		<form method="dialog" id="add-form">
+			<div></div>
+			<h1 class="title">Новий сорт</h1>
+			<div style="display:flex;flex-direction:row;gap:8px;">
+				<label style="flex-grow:1;">
+					<span>Відсоток</span>
+					<select class="select" id="percent" name="percent" required>
+						<option value="125">125%</option>
+						<option value="100">100%</option>
+						<option value="80">80%</option>
+						<option value="75">75%</option>
+						<option value="60">60%</option>
+						<option value="50">50%</option>
+					</select>
+				</label>
+				<label style="flex-grow:1;">
+					<span>Насіння</span>
+					<select class="select" id="seeds-per-box" name="seedsPerBox" required>
+						<option value="100">100</option>
+						<option value="125">125</option>
+						<option value="150">150</option>
+						<option value="200">200</option>
+						<option value="250">250</option>
+						<option value="300">300</option>
+					</select>
+				</label>
+			</div>
+			<label>
+				<span>Кількість ящиків</span>
+				<input class="input" id="box-count" name="boxCount" type="number" min="1" inputmode="numeric" pattern="[0-9]*" required />
+			</label>
+			<div class="button-container">
+				<button class="button primary" type="submit">Додати</button>
+				<button class="button" type="reset">Відмінити</button>
+			</div>
+		</form>
+	</dialog>
+	<script>
+		const calcBoxPerPoot = (percent, seedAmount) => 2.6 * percent / (seedAmount / 100.0);
+
+		const tbody = document.getElementById('tbody');
+		const tfoot = document.getElementById('tfoot');
+		const dialog = document.getElementById('add-dialog');
+		const form = document.getElementById('add-form');
+
+		let plants = [];
+
+		document.getElementById('new-plant').addEventListener('click', event => {
+			dialog.showModal();
+		});
+		document.getElementById('clean-plants').addEventListener('click', event => {
+			plants = [];
+			tbody.innerHTML = '<tr><td>—</td><td>—</td><td>—</td></tr>';
+			tfoot.innerHTML = '<tr><td colspan="2">Всього</td><td>0</td></tr>';
+		});
+		form.addEventListener('submit', event => {
+			event.preventDefault();
+
+			const formData = new FormData(form);
+			const data = Object.fromEntries(formData.entries());
+
+			plants.push(data);
+
+			tbody.innerHTML = '';
+
+			let pootAmount = 18.0;
+			let totalBoxes = 0;
+			plants.forEach((plant, index) => {
+				const item = document.createElement('tr');
+
+				if (pootAmount <= 0.0) {
+					plant.boxesNeeded = null;
+					item.innerHTML = `<td>${index + 1}</td><td>${plant.percent}%<br/>${plant.seedsPerBox} нас.<br/>${plant.boxCount} ящ.</td><td>—</td>`;
+				} else {
+					let boxPerPoot = calcBoxPerPoot(plant.percent / 100.0, plant.seedsPerBox);
+
+					let boxNeeded = Math.min(pootAmount * boxPerPoot, plant.boxCount);
+					plant.boxesNeeded = Math.round((boxNeeded + Number.EPSILON) * 100) / 100;
+					totalBoxes += plant.boxesNeeded;
+
+					let pootUsed = boxNeeded / boxPerPoot;
+					pootAmount -= pootUsed;
+
+					item.innerHTML = `<td>${index + 1}</td><td>${plant.percent}%<br/>${plant.seedsPerBox} нас.<br/>${plant.boxCount} ящ.</td><td>${plant.boxesNeeded}</td>`;
+				}
+
+				tbody.appendChild(item);
+			});
+
+			tfoot.innerHTML = `<tr><td colspan="2">Всього</td><td>${totalBoxes}</td></tr>`;
+
+			form.reset();
+		});
+		form.addEventListener('reset', event => {
+			dialog.close();
+		});
+	</script>
+</body>
+
+</html>

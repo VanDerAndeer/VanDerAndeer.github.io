@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="en">
 
 <head>
 	<meta charset="utf-8" />
 	<meta name="robots" content="noindex,nofollow" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>Калькулятор висаджування</title>
+	<title>Planting calculator</title>
 	<link rel="icon" type="image/x-icon" href="./favicon.ico" />
 	<style>
 		* {
@@ -183,13 +183,13 @@
 <body>
 	<main class="content">
 		<div></div>
-		<h1 class="title">Калькулятор висаджування</h1>
+		<h1 class="title">Planting calculator</h1>
 		<table class="table">
 			<thead>
 				<tr>
-					<th>№</th>
-					<th>Параметри</th>
-					<th>Ящики</th>
+					<th>Plant</th>
+					<th>Params</th>
+					<th>Box needed</th>
 				</tr>
 			</thead>
 			<tbody id="tbody">
@@ -201,23 +201,27 @@
 			</tbody>
 			<tfoot id="tfoot">
 				<tr>
-					<td colspan="2">Всього</td>
+					<td colspan="2">Total</td>
 					<td>0</td>
 				</tr>
 			</tfoot>
 		</table>
 		<div class="button-container">
-			<button class="button primary" id="new-plant">Додати сорт</button>
-			<button class="button" id="clean-plants">Очистити</button>
+			<button class="button primary" id="new-plant">Add plant variety</button>
+			<button class="button" id="clean-plants">Remove all</button>
 		</div>
 	</main>
 	<dialog class="dialog" id="add-dialog">
 		<form method="dialog" id="add-form">
 			<div></div>
-			<h1 class="title">Новий сорт</h1>
+			<h1 class="title">Add plant variety</h1>
+			<label style="flex-grow:1;">
+				<span>Plant name</span>
+				<input class="input" type="text" id="name" name="name" required />
+			</label>
 			<div style="display:flex;flex-direction:row;gap:8px;">
 				<label style="flex-grow:1;">
-					<span>Відсоток</span>
+					<span>Planting percent</span>
 					<select class="select" id="percent" name="percent" required>
 						<option value="125">125%</option>
 						<option value="100">100%</option>
@@ -228,7 +232,7 @@
 					</select>
 				</label>
 				<label style="flex-grow:1;">
-					<span>Насіння</span>
+					<span>Seeds per box</span>
 					<select class="select" id="seeds-per-box" name="seedsPerBox" required>
 						<option value="100">100</option>
 						<option value="125">125</option>
@@ -240,12 +244,12 @@
 				</label>
 			</div>
 			<label>
-				<span>Кількість ящиків</span>
+				<span>Box count</span>
 				<input class="input" id="box-count" name="boxCount" type="number" min="1" inputmode="numeric" pattern="[0-9]*" required />
 			</label>
 			<div class="button-container">
-				<button class="button primary" type="submit">Додати</button>
-				<button class="button" type="reset">Відмінити</button>
+				<button class="button primary" type="submit">Add</button>
+				<button class="button" type="reset">Cancel</button>
 			</div>
 		</form>
 	</dialog>
@@ -265,7 +269,7 @@
 		document.getElementById('clean-plants').addEventListener('click', event => {
 			plants = [];
 			tbody.innerHTML = '<tr><td>—</td><td>—</td><td>—</td></tr>';
-			tfoot.innerHTML = '<tr><td colspan="2">Всього</td><td>0</td></tr>';
+			tfoot.innerHTML = '<tr><td colspan="2">Total</td><td>0</td></tr>';
 		});
 		form.addEventListener('submit', event => {
 			event.preventDefault();
@@ -284,7 +288,7 @@
 
 				if (pootAmount <= 0.0) {
 					plant.boxesNeeded = null;
-					item.innerHTML = `<td>${index + 1}</td><td>${plant.percent}%<br/>${plant.seedsPerBox} нас.<br/>${plant.boxCount} ящ.</td><td>—</td>`;
+					item.innerHTML = `<td>${plant.name}</td><td>${plant.percent}%<br/>${plant.seedsPerBox} seeds<br/>${plant.boxCount} boxes</td><td>—</td>`;
 				} else {
 					let boxPerPoot = calcBoxPerPoot(plant.percent / 100.0, plant.seedsPerBox);
 
@@ -295,13 +299,13 @@
 					let pootUsed = boxNeeded / boxPerPoot;
 					pootAmount -= pootUsed;
 
-					item.innerHTML = `<td>${index + 1}</td><td>${plant.percent}%<br/>${plant.seedsPerBox} нас.<br/>${plant.boxCount} ящ.</td><td>${plant.boxesNeeded}</td>`;
+					item.innerHTML = `<td>${plant.name}</td><td>${plant.percent}%<br/>${plant.seedsPerBox} seeds<br/>${plant.boxCount} boxes</td><td>${plant.boxesNeeded}</td>`;
 				}
 
 				tbody.appendChild(item);
 			});
 
-			tfoot.innerHTML = `<tr><td colspan="2">Всього</td><td>${totalBoxes}</td></tr>`;
+			tfoot.innerHTML = `<tr><td colspan="2">Total</td><td>${totalBoxes}</td></tr>`;
 
 			form.reset();
 		});

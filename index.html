@@ -334,7 +334,8 @@
 				tbody.appendChild(item);
 			});
 
-			tfoot.innerHTML = `<tr><td colspan="2">Total</td><td>${totalBoxes}</td></tr>`;
+			let pootState = (pootAmount <= 0) ? '' : '(maybe not full)';
+			tfoot.innerHTML = `<tr><td colspan="2">Total box per line</td><td>${totalBoxes} ${pootState}</td></tr>`;
 
 			form.reset();
 		});

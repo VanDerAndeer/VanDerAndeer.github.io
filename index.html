@@ -59,6 +59,7 @@
 			border-bottom: 1px solid #e9e9e9;
 		}
 		.table th {
+			text-align: left;
 			font-weight: 600;
 			font-size: 14px;
 		}
@@ -296,12 +297,13 @@
 
 			let pootAmount = 18.0;
 			let totalBoxes = 0;
+			let maxBoxes = 0.0;
+			let maxBoxesPlantIndex = -1;
 			plants.forEach((plant, index) => {
 				const item = document.createElement('tr');
 
 				if (pootAmount <= 0.0) {
 					plant.boxesNeeded = null;
-					item.innerHTML = `<td>${plant.name}</td><td>${plant.percent}%<br/>${plant.seedsPerBox} seeds<br/>${plant.boxCount} boxes</td><td>—</td>`;
 				} else {
 					let boxPerPoot = calcBoxPerPoot(plant.percent / 100.0, plant.seedsPerBox);
 
@@ -312,7 +314,21 @@
 					let pootUsed = boxNeeded / boxPerPoot;
 					pootAmount -= pootUsed;
 
-					item.innerHTML = `<td>${plant.name}</td><td>${plant.percent}%<br/>${plant.seedsPerBox} seeds<br/>${plant.boxCount} boxes</td><td>${plant.boxesNeeded}</td>`;
+					if (plant.boxesNeeded > maxBoxes) {
+						maxBoxesPlantIndex = index;
+						maxBoxes = plant.boxesNeeded;
+					}
+				}
+			});
+
+			plants.forEach((plant, index) => {
+				const item = document.createElement('tr');
+
+				if (plant.boxesNeeded == null) {
+					item.innerHTML = `<td>${plant.name}</td><td>${plant.percent}%<br/>${plant.seedsPerBox} seeds<br/>${plant.boxCount} boxes</td><td>—</td>`;
+				} else {
+					let state = (index === maxBoxesPlantIndex) ? 'opened' : 'closed';
+					item.innerHTML = `<td>${plant.name}</td><td>${plant.percent}%<br/>${plant.seedsPerBox} seeds<br/>${plant.boxCount} boxes</td><td>${plant.boxesNeeded} (${state})</td>`;
 				}
 
 				tbody.appendChild(item);

@@ -325,10 +325,10 @@
 				const item = document.createElement('tr');
 
 				if (plant.boxesNeeded == null) {
-					item.innerHTML = `<td>${plant.name}</td><td>${plant.percent}%<br/>${plant.seedsPerBox} seeds<br/>${plant.boxCount} boxes</td><td>—</td>`;
+					item.innerHTML = `<td>${plant.name}</td><td>${plant.percent}%<br/>${plant.seedsPerBox} bulbs<br/>${plant.boxCount} boxes</td><td>—</td>`;
 				} else {
 					let state = (index === maxBoxesPlantIndex) ? 'opened' : 'closed';
-					item.innerHTML = `<td>${plant.name}</td><td>${plant.percent}%<br/>${plant.seedsPerBox} seeds<br/>${plant.boxCount} boxes</td><td>${plant.boxesNeeded} (${state})</td>`;
+					item.innerHTML = `<td>${plant.name}</td><td>${plant.percent}%<br/>${plant.seedsPerBox} bulbs<br/>${plant.boxCount} boxes</td><td>${plant.boxesNeeded} (${state})</td>`;
 				}
 
 				tbody.appendChild(item);

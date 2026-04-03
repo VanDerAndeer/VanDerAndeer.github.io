@@ -177,13 +177,6 @@
 		.select:not(:disabled) {
 			cursor: pointer;
 		}
-		.tag {
-		    display: inline-block;
-		    width: 16px;
-		    height: 16px;
-		    border-radius: 50%;
-		    border: solid 2px #323232;
-		}
 	</style>
 </head>
 
@@ -194,7 +187,6 @@
 		<table class="table">
 			<thead>
 				<tr>
-					<th>Tag</th>
 					<th>Plant</th>
 					<th>Params</th>
 					<th>Box needed</th>
@@ -202,7 +194,6 @@
 			</thead>
 			<tbody id="tbody">
 				<tr>
-					<td>—</td>
 					<td>—</td>
 					<td>—</td>
 					<td>—</td>
@@ -224,10 +215,6 @@
 		<form method="dialog" id="add-form">
 			<div></div>
 			<h1 class="title">Add plant variety</h1>
-			<label style="flex-grow:1;">
-				<span>Tag</span>
-				<input type="color" name="colorTag" />
-			</label>
 			<label style="flex-grow:1;">
 				<span>Plant name</span>
 				<select class="select" id="name" name="name" required>
@@ -295,8 +282,8 @@
 		});
 		document.getElementById('clean-plants').addEventListener('click', event => {
 			plants = [];
-			tbody.innerHTML = '<tr><td>—</td><tr><td>—</td><td>—</td><td>—</td></tr>';
-			tfoot.innerHTML = '<tr><td colspan="3">Total</td><td>0</td></tr>';
+			tbody.innerHTML = '<tr><td>—</td><td>—</td><td>—</td></tr>';
+			tfoot.innerHTML = '<tr><td colspan="2">Total</td><td>0</td></tr>';
 		});
 		form.addEventListener('submit', event => {
 			event.preventDefault();
@@ -315,7 +302,7 @@
 
 				if (pootAmount <= 0.0) {
 					plant.boxesNeeded = null;
-					item.innerHTML = `<td><div class="tag" style="background:${plant.colorTag};"></div></td><td>${plant.name}</td><td>${plant.percent}%<br/>${plant.seedsPerBox} seeds<br/>${plant.boxCount} boxes</td><td>—</td>`;
+					item.innerHTML = `<td>${plant.name}</td><td>${plant.percent}%<br/>${plant.seedsPerBox} seeds<br/>${plant.boxCount} boxes</td><td>—</td>`;
 				} else {
 					let boxPerPoot = calcBoxPerPoot(plant.percent / 100.0, plant.seedsPerBox);
 
@@ -326,13 +313,13 @@
 					let pootUsed = boxNeeded / boxPerPoot;
 					pootAmount -= pootUsed;
 
-					item.innerHTML = `<td><div class="tag" style="background:${plant.colorTag};"></div></td><td>${plant.name}</td><td>${plant.percent}%<br/>${plant.seedsPerBox} seeds<br/>${plant.boxCount} boxes</td><td>${plant.boxesNeeded}</td>`;
+					item.innerHTML = `<td>${plant.name}</td><td>${plant.percent}%<br/>${plant.seedsPerBox} seeds<br/>${plant.boxCount} boxes</td><td>${plant.boxesNeeded}</td>`;
 				}
 
 				tbody.appendChild(item);
 			});
 
-			tfoot.innerHTML = `<tr><td colspan="3">Total</td><td>${totalBoxes}</td></tr>`;
+			tfoot.innerHTML = `<tr><td colspan="2">Total</td><td>${totalBoxes}</td></tr>`;
 
 			form.reset();
 		});
